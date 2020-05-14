@@ -28,6 +28,7 @@ services:
     environment:
       - 'JAVA_OPTS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx1200m'
       - TEKU_NETWORK=schlesi
+      - 'TEKU_P2P_STATIC_PEERS=/ip4/54.147.29.135/tcp/9546/p2p/16Uiu2HAmVUBYqki8u6vuz56fqfxRS3RLzLriMtr7akkWKwcv9Xwg'
       - TEKU_REST_API_ENABLED=true
       - TEKU_METRICS_ENABLED=true
       - 'TEKU_METRICS_INTERFACE=0.0.0.0'
@@ -37,12 +38,11 @@ services:
       - 'TEKU_ETH1_ENDPOINT=http://host.docker.internal:8545'
       - TEKU_DATA_PATH=/data/teku
       - TEKU_LOG_FILE=/data/teku.log
-      - TEKU_VALIDATOR_KEY_FILES="/data/keys/validator_846af35/validator_846af35.json"
-      - TEKU_VALIDATOR_KEY_PASSWORD_FILES="/data/keys/validator_846af35/password.txt"
-    command:
-      - '--validators-key-files=/data/keys/validator_846af35/validator_846af35.json'
-      - '--validators-key-password-files=/data/keys/validator_846af35/password.txt'
+      - TEKU_VALIDATORS_KEY_FILES="/data/keys/validator_846af35/validator_846af35.json"
+      - TEKU_VALIDATORS_KEY_PASSWORD_FILES="/data/keys/validator_846af35/password.txt"
     volumes:
       - './teku:/data'
     ports:
-      - "8545:8545"
+      - "9000:9000"
+      - "5051:5051"
+      - "8008:8008"
