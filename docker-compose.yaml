@@ -25,24 +25,40 @@ services:
 
   teku:
     image: pegasyseng/teku:develop
+    user: '501'
     environment:
-      - 'JAVA_OPTS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx1200m'
-      - TEKU_NETWORK=schlesi
-      - 'TEKU_P2P_STATIC_PEERS=/ip4/54.147.29.135/tcp/9546/p2p/16Uiu2HAmVUBYqki8u6vuz56fqfxRS3RLzLriMtr7akkWKwcv9Xwg'
+      - 'JAVA_OPTS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx2g'
+      - TEKU_NETWORK=witti
       - TEKU_REST_API_ENABLED=true
       - TEKU_METRICS_ENABLED=true
       - 'TEKU_METRICS_INTERFACE=0.0.0.0'
       - TEKU_METRICS_PORT=8008
       - 'TEKU_METRICS_HOST_WHITELIST=*'
+      - 'TEKU_REST_API_HOST_WHITELIST=*'
       - TEKU_ETH1_ENABLED=true
-      - 'TEKU_ETH1_ENDPOINT=http://host.docker.internal:8545'
+      - 'TEKU_ETH1_ENDPOINT=https://goerli.infura.io/v3/<YOUR_API_KEY>'
       - TEKU_DATA_PATH=/data/teku
       - TEKU_LOG_FILE=/data/teku.log
-      - TEKU_VALIDATORS_KEY_FILES="/data/keys/validator_846af35/validator_846af35.json"
-      - TEKU_VALIDATORS_KEY_PASSWORD_FILES="/data/keys/validator_846af35/password.txt"
+#      - TEKU_VALIDATORS_KEY_FILES="/data/keys/validator_846af35/validator_846af35.json"
+#      - TEKU_VALIDATORS_KEY_PASSWORD_FILES="/data/keys/validator_846af35/password.txt"
     volumes:
       - './teku:/data'
     ports:
       - "9000:9000"
       - "5051:5051"
       - "8008:8008"
+
+  eth2stats:
+    image: alethio/eth2stats-client:latest
+    user: '501'
+    volumes:
+      - './eth2stats:/data'
+    command:
+      - "run"
+      - "--eth2stats.node-name=AJ's Little Clone"
+      - '--data.folder=/data'
+      - '--eth2stats.addr=grpc.witti.eth2stats.io:443'
+      - '--eth2stats.tls=true'
+      - '--beacon.type=teku'
+      - '--beacon.addr=http://teku:5051'
+      - '--beacon.metrics-addr=http://teku:8008/metrics'
